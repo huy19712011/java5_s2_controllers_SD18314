@@ -8,7 +8,19 @@
     <title>Spring Boot + JSP</title>
 </head>
 <body>
-<h1>Set up ... </h1>
+<table border="1">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Email</th>
+    </tr>
+    <c:forEach items="${students}" var="student">
+        <tr>
+            <td>${student.id}</td>
+            <td>${student.name}</td>
+            <td>${student.email}</td>
+        </tr>
+    </c:forEach>
 
 </body>
 </html>
