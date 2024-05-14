@@ -3,16 +3,22 @@ package com.example.java5_s2_controllers_sd18314.controllers;
 import com.example.java5_s2_controllers_sd18314.entities.Student;
 import com.example.java5_s2_controllers_sd18314.services.StudentService;
 import jakarta.annotation.Nullable;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping(value = "/basic")
 public class BasicController {
 
     final
@@ -94,6 +100,52 @@ public class BasicController {
             @PathVariable("email") String email
     ) {
         return "Student with id = " + id + " email = " + email;
+    }
+
+    //4. Class level
+
+    //5. Working with headers
+    @RequestMapping(value = "/method4", headers = "key1=value1")
+    @ResponseBody
+    public  String method4() {
+        return "method4";
+    }
+
+    //6.@RequestMapping with Produces and Consumes
+    @RequestMapping(value="/method6", produces={"application/json","application/xml"}, consumes="text/html")
+    @ResponseBody
+    public String method6(){
+        return "method6";
+    }
+
+    //7. @CookieValue
+    @RequestMapping(value = "/readCookie")
+    @ResponseBody
+    public String readCookieValue(@CookieValue(value = "username", defaultValue = "defaultName") String username) {
+        return "Cookie Value: " + username;
+    }
+
+    // set Cookie value
+    @RequestMapping(value = "/change-username")
+    @ResponseBody
+    public String setCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie("username", "NewName");
+        response.addCookie(cookie);
+
+        return "Usename is changed...";
+    }
+
+    @RequestMapping(value = "/all-cookies")
+    @ResponseBody
+    public String readAllCookies(HttpServletRequest request) {
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            return Arrays.stream(cookies)
+                    .map(c -> c.getName() + " = " + c.getValue())
+                    .collect(Collectors.joining(", "));
+        }
+        return "No cookies";
     }
 
 }
